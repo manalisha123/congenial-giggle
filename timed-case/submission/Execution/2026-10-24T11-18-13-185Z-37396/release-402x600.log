@@ -1,0 +1,14 @@
+release-402x600 http://127.0.0.1:4173/release/
+Started: 2026-10-24T11:18:14.206Z
+FAIL
+AssertionError [ERR_ASSERTION]: Queen x1 checkout: total
++ actual - expected
+
++ 'AED 900.00'
+- 'AED 810.00'
+       ^
+
+    at assertLines (D:\InterviewPracticesGer\Phase2\timed-case\submission\Artifact\check.cjs:24:10)
+    at async check (D:\InterviewPracticesGer\Phase2\timed-case\submission\Artifact\check.cjs:52:5)
+    at async main (D:\InterviewPracticesGer\Phase2\timed-case\runner.cjs:38:11)
+Finished: 2026-10-24T11:18:14.695Z

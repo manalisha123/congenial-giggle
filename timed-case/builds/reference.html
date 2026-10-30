@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cedar Store</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px Arial, sans-serif; color: #172a28; background: #f4f6f5; }
+header { padding: 16px 24px; background: #163c34; color: white; font-weight: 700; }
+main { max-width: 680px; margin: auto; padding: 20px 24px 110px; }
+h1 { font-size: 28px; margin: 0 0 12px; }
+h2 { font-size: 22px; }
+p { line-height: 1.45; }
+label { display: block; margin: 14px 0 6px; font-weight: 700; }
+input, select { width: 100%; min-height: 42px; padding: 8px; border: 1px solid #75847e; font: inherit; background: white; }
+button { min-height: 44px; padding: 12px 18px; background: #165746; color: white; border: none; font: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #007ba4; outline-offset: 2px; }
+.purchase { position: fixed; bottom: 16px; left: 24px; right: 24px; max-width: 632px; margin: auto; }
+[hidden] { display: none !important; }
+.line { display: flex; justify-content: space-between; gap: 16px; padding: 9px 0; border-bottom: 1px solid #cbd6d0; }
+.total { font-weight: 700; font-size: 20px; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+
+</style>
+</head>
+<body>
+<header>CEDAR</header>
+<main>
+<section id="product">
+<h1>Cedar mattress</h1>
+<p data-testid="offer">AED 900.00. Use REST10 for 10% off your mattress. One included pillow gift is free.</p>
+<label for="size">Size</label><select id="size"><option>Queen</option><option>King</option></select>
+<label for="quantity">Quantity</label><input id="quantity" type="number" value="1" min="1" max="3">
+<p>Both sizes have the same price in this assessment store.</p>
+<button class="purchase" data-testid="purchase" id="add">Add to cart</button>
+</section>
+<section id="cart" hidden>
+<h1>Your cart</h1>
+<div id="cart-lines"></div>
+<label for="code">Promo code</label><input id="code" autocomplete="off">
+<div class="actions"><button id="apply">Apply code</button><button id="checkout-button">Continue to checkout</button></div>
+<p role="status" id="promo-status"></p>
+</section>
+<section id="checkout" hidden>
+<h1>Simulated checkout</h1><div id="checkout-lines"></div>
+<p>No payment or order is taken.</p>
+</section>
+</main>
+<script>
+const state = { size: 'Queen', quantity: 1, promo: false };
+const total = () => state.quantity * 900 * (state.promo ? 0.9 : 1);
+const money = n => 'AED ' + n.toFixed(2);
+function lines(checkout) {
+  const amount = total();
+  return `<div class="line"><span data-testid="item">Cedar mattress - ${state.size}</span><span data-testid="quantity">${state.quantity}</span></div>
+  <div class="line"><span>Pillow gift</span><span data-testid="gift">AED 0.00</span></div>
+  <div class="line total"><span>Total</span><span data-testid="total">${money(amount)}</span></div>`;
+}
+document.querySelector('#add').onclick = () => {
+  state.size = document.querySelector('#size').value;
+  state.quantity = Math.min(3, Math.max(1, Number(document.querySelector('#quantity').value) || 1));
+  state.promo = false;
+  document.querySelector('#product').hidden = true;
+  document.querySelector('#cart').hidden = false;
+  document.querySelector('#cart-lines').innerHTML = lines(false);
+};
+document.querySelector('#apply').onclick = () => {
+  state.promo = document.querySelector('#code').value.trim().toUpperCase() === 'REST10';
+  document.querySelector('#cart-lines').innerHTML = lines(false);
+  document.querySelector('#promo-status').textContent = state.promo ? 'Code applied' : 'Code not recognized';
+};
+document.querySelector('#checkout-button').onclick = () => {
+  document.querySelector('#cart').hidden = true;
+  document.querySelector('#checkout').hidden = false;
+  document.querySelector('#checkout-lines').innerHTML = lines(true);
+};
+</script>
+</body>
+</html>
